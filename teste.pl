@@ -2,15 +2,8 @@ sala(a).
 sala(b).
 sala(c).
 
-%fechado(a).
-%fechado(b).
-%fechado(c).
-
 aberto(X) :- not(fechado(X)).
 
-%desligado(a,luzes).
-%desligado(b,luzes).
-%desligado(c,luzes).
 %generalizando para qualquer equipamento, de qualquer sala.
 ligado(X,Y) :- not(desligado(X,Y)).
 
@@ -45,7 +38,7 @@ aula(karina,b,9,11).
 aula(marcos,b,11,13).
 
 %ligarLuz(Sala).
-can(ligarluz(Sala),[at(Professor,Sala)], sala) :- %vehicle move only within city
+can(ligarluz(Sala),[at(Professor,Sala)], sala) :- 
 	sala(Sala),
 	aula(Professor,Sala,_,_),
 	professor(Professor),
@@ -58,7 +51,31 @@ adds(ligarluz(Sala),[ligado(Sala,luzes)],ligado(Sala,luzes), sala):-
 deletes(ligarluz(Sala),[desligado(Sala,luzes)], sala):-
 	sala(Sala).
 	
+%ligararcondicionado(Sala)
+can(ligararcondicionado(Sala),[at(Professor,Sala)], sala) :- 
+	sala(Sala),
+	aula(Professor,Sala,_,_),
+	professor(Professor),
+	gosta(Professor,arcondicionado).
 	
+adds(ligararcondicionado(Sala),[ligado(Sala,arcondicionado)],ligado(Sala,arcondicionado), sala):-
+	sala(Sala).
+	
+deletes(ligararcondicionado(Sala),[desligado(Sala,arcondicionado)], sala):-
+	sala(Sala).	
+
+%desligararcondicionado
+%ajustararcondicionado
+
+%ligarcomputador	
+%desligarcomputador
+%ligardatashow
+%desligardatashow
+%desligarluz
+
+%daraula(avançar o horario, adicionar deuaula(Professor)).
+%abrirsala
+%fecharsala
 	
 	
 test(P) :-
@@ -72,6 +89,8 @@ test2(P) :-
 	plan([at(aline, a),horario(7),fechado(a),sala(a)],
 	     [ligado(a,luzes)], sala,P).
 		 
-
+test3(P) :-
+	plan([at(aline, a),horario(7),fechado(a),sala(a)],
+	     [ligado(a,arcondicionado)], sala,P).
 
 		 
