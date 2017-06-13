@@ -152,17 +152,17 @@ deletes(desligardatashow(Sala),[ligado(Sala,datashow)], sala) :-
 
 	
 %preparar(sala)
-can(preparar(sala), [at(Professor,uff),horario(N),aberto(Sala)],sala):-
+can(preparar(Sala), [at(Professor,uff),horario(N),aberto(Sala)],sala):-
 	sala(Sala),
 	%usa(Professor, X),
 	%not(usa(Professor,Y)),
 	aula(Professor,Sala,N,_).
 	
-adds(preparar(sala),[at(Professor,Sala)],[at(Professor,Sala)],sala):-
+adds(preparar(Sala),[at(Professor,Sala)],[at(Professor,Sala)],sala):-
 	sala(Sala),
 	aula(Professor,Sala,_,_).	
 	
-deletes(preparar(sala),[at(Professor,uff),fechado(Sala)],sala) :-
+deletes(preparar(Sala),[at(Professor,uff),fechado(Sala)],sala) :-
 	sala(Sala),
 	aula(Professor,Sala,_,_).
 
@@ -173,43 +173,44 @@ can(daraula(Sala,Professor), [at(Professor,Sala),ligado(Sala,X),horario(N)],sala
 	usa(Professor, X),
 	aula(Professor,Sala,N,_).
 
-adds(daraula(Sala,Professor),[at(Professor,uff),deuaula(Professor),horario(M),fechado(Sala)]
-	,[at(Professor,uff),deuaula(Professor),horario(M),fechado(Sala)],sala):-
+adds(daraula(Sala,Professor),[at(Professor,uff),deuaula(Professor),horario(M)]
+	,[at(Professor,uff),deuaula(Professor),horario(M)],sala):-
 	sala(Sala),
 	aula(Professor,Sala,_,M),
 	usa(Professor,X).
 	
 deletes(daraula(Sala,Professor),[horario(N)],sala) :-	
 	sala(Sala),
+	
 	aula(Professor,Sala,N,_).
 	
 
 %abrirsala
-can(abrirsala(sala), [at(Professor,uff),horario(N)],sala):-
+can(abrirsala(Sala), [at(Professor,uff),horario(N)],sala):-
 	sala(Sala),
 	%usa(Professor, X),
 	%not(usa(Professor,Y)),
 	aula(Professor,Sala,N,_).
 	
-adds(abrirsala(sala),[aberto(Sala)],[aberto(Sala)],sala):-
+adds(abrirsala(Sala),[aberto(Sala)],[aberto(Sala)],sala):-
 	sala(Sala).	
 	
-deletes(abrirsala(sala),[fechado(Sala)],sala) :-
+deletes(abrirsala(Sala),[fechado(Sala)],sala) :-
 	sala(Sala),
 	aula(Professor,Sala,_,_).
 	
 	
 %fecharsala
-can(fecharsala(sala), [at(Professor,uff),horario(N)],sala):-
+can(fecharsala(Sala), [at(Professor,uff),horario(N)],sala):-
 	sala(Sala),
 	%usa(Professor, X),
 	%not(usa(Professor,Y)),
 	aula(Professor,Sala,_,N).
 	
-adds(fecharsala(sala),[fechado(Sala)],[fechado(Sala)],sala):-
+adds(fecharsala(Sala),[fechado(Sala)],[fechado(Sala)],sala):-
 	sala(Sala).	
 	
-deletes(fecharsala(sala),[aberto(Sala)],sala) :-
+deletes(fecharsala(Sala),[aberto(Sala)],sala) :-
 	sala(Sala).	
 	
 	
@@ -220,21 +221,25 @@ test(P) :-
 	,[deuaula(aline),deuaula(leonardo),desligado(a,luzes),desligado(a,arcondicionado)
 	, desligado(a,datashow),desligado(a,computador),fechado(a),horario(13)], sala,P).
 		 
-		 
+	%funcionando	 
 	%testando o ligar luzes	 
 test2(P) :-
 	plan([at(aline, a),horario(7),fechado(a),sala(a),desligado(a,luzes)],
 	     [ligado(a,luzes)], sala,P).
-		 
+	%funcionando	 
 test3(P) :-
-	plan([at(aline, a),horario(7),fechado(a),sala(a)],
-	     [ligado(a,arcondicionado)], sala,P).
+	plan([at(aline, uff),horario(7),fechado(a),desligado(a,luzes),desligado(a,datashow),desligado(a,computador)],
+	[at(aline,a),aberto(a),ligado(a,luzes),ligado(a,datashow),ligado(a,computador)], sala,P).
+	%funcionando
 test4(P) :-
-	plan([at(aline, uff),horario(7),fechado(a),sala(a)],
+	plan([at(aline, uff),horario(7),fechado(a),desligado(a,luzes),desligado(a,datashow),desligado(a,computador)],
 	     [at(aline,uff),deuaula(aline), horario(9),fechado(a)], sala,P).
-
 test5(P) :-
+	plan([at(aline, uff),at(leonardo,uff),horario(7),fechado(a),desligado(a,luzes),desligado(a,datashow),desligado(a,computador)],
+	     [at(aline,uff),at(leonardo,a),deuaula(aline),horario(9),fechado(a)], sala,P).
+test6(P) :-
 	plan([ligado(a,arcondicionado)],
 	     [desligado(a,arcondicionado)], sala,P).
+		 
 		 
 		 
