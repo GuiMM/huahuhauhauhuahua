@@ -97,7 +97,19 @@ deletes(desligararcondicionado(Sala),[ligado(Sala,arcondicionado)], sala) :-
 
 	
 %ajustararcondicionado(Sala)
-
+can(ajustararcondicionado(Sala),[ligado(Sala,arcondicionado)], sala) :-
+	aula(Professor,Sala,_,_),
+	equipamento(arcondicionado),
+	usa(Professor,arcondicionado),
+	temperaturaar(Professor,Temperatura).
+	
+adds(ajustararcondicionado(Sala),[arajustado(Temperatura)],[arajustado(Temperatura)], sala):-
+	aula(Professor,Sala,_,_),
+	equipamento(arcondicionado),
+	usa(Professor,arcondicionado),
+	temperaturaar(Professor,Temperatura).
+	
+deletes(ajustararcondicionado(Sala),):-
 
 %ligarcomputador(Sala)
 can(ligarcomputador(Sala),[at(Professor,Sala),desligado(Sala,computador)], sala) :- 
@@ -152,35 +164,37 @@ deletes(desligardatashow(Sala),[ligado(Sala,datashow)], sala) :-
 
 	
 %preparar(sala)
-can(preparar(sala), [at(Professor,uff),horario(N),aberto(Sala)],sala):-
-	sala(Sala),
-	%usa(Professor, X),
-	%not(usa(Professor,Y)),
+can(preparar(Sala), [at(Professor,uff),horario(N)],sala):- %,aberto(Sala)],sala):-
+	equipamento(X),
+	usa(Professor, X),
 	aula(Professor,Sala,N,_).
 	
-adds(preparar(sala),[at(Professor,Sala)],[at(Professor,Sala)],sala):-
-	sala(Sala),
+adds(preparar(Sala),[at(Professor,Sala),ligado(Sala,X),aberto(Sala)],[at(Professor,Sala),ligado(Sala,X),aberto(Sala)],sala):-
+	equipamento(X),
+	usa(Professor, X),
 	aula(Professor,Sala,_,_).	
 	
-deletes(preparar(sala),[at(Professor,uff),fechado(Sala)],sala) :-
-	sala(Sala),
+deletes(preparar(Sala),[at(Professor,uff),desligado(Sala,X),fechado(Sala)],sala) :-
+	equipamento(X),
+	usa(Professor, X),
 	aula(Professor,Sala,_,_).
 
 	
 %daraula(avançar o horario, adicionar deuaula(Professor)).
 can(daraula(Sala,Professor), [at(Professor,Sala),ligado(Sala,X),horario(N)],sala):-
-	sala(Sala),
+	equipamento(X),
 	usa(Professor, X),
 	aula(Professor,Sala,N,_).
 
-adds(daraula(Sala,Professor),[at(Professor,uff),deuaula(Professor),horario(M),fechado(Sala)]
-	,[at(Professor,uff),deuaula(Professor),horario(M),fechado(Sala)],sala):-
-	sala(Sala),
-	aula(Professor,Sala,_,M),
-	usa(Professor,X).
+adds(daraula(Sala,Professor),[at(Professor,uff),deuaula(Professor),horario(M),fechado(Sala),desligado(Sala,X)]
+	,[at(Professor,uff),deuaula(Professor),horario(M),fechado(Sala),desligado(Sala,X)],sala):-
+	equipamento(X),
+	usa(Professor, X),
+	aula(Professor,Sala,_,M).
 	
-deletes(daraula(Sala,Professor),[horario(N)],sala) :-	
-	sala(Sala),
+deletes(daraula(Sala,Professor),[at(Professor,Sala),ligado(Sala,X),horario(N),aberto(Sala)],sala) :-	
+	equipamento(X),
+	usa(Professor, X),
 	aula(Professor,Sala,N,_).
 	
 
