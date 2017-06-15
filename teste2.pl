@@ -2,12 +2,6 @@ sala(a).
 sala(b).
 sala(c).
 
-%aberto(X) :- not(fechado(X)).
-
-%generalizando para qualquer equipamento, de qualquer sala.
-%ligado(X,Y) :- not(desligado(X,Y)).
-
-
 professor(aline).
 professor(leonardo).
 professor(marcos).
@@ -32,8 +26,6 @@ usa(leonardo,luzes).
 usa(marcos,computador).
 usa(marcos,arcondicionado).
 usa(karina,datashow).
-%naousa(X,Y) :- usa(X,Y),Y=\=computador.
-
 
 temperaturaar(leonardo,15).
 temperaturaar(marcos,20).
@@ -76,8 +68,10 @@ can(ligararcondicionado(Sala),[at(Professor,Sala),desligado(Sala,arcondicionado)
 	equipamento(arcondicionado),
 	usa(Professor,arcondicionado).
 	
-adds(ligararcondicionado(Sala),[ligado(Sala,arcondicionado)],ligado(Sala,arcondicionado), sala):-
-	sala(Sala).
+adds(ligararcondicionado(Sala),[ligado(Sala,arcondicionado)],[ligado(Sala,arcondicionado)], sala):-
+	aula(Professor,Sala,_,_),
+	equipamento(arcondicionado),
+	usa(Professor,arcondicionado).
 	
 deletes(ligararcondicionado(Sala),[desligado(Sala,arcondicionado)], sala):-
 	sala(Sala).	
@@ -89,7 +83,7 @@ can(desligararcondicionado(Sala),[ligado(Sala,arcondicionado)], sala) :-
 	equipamento(arcondicionado),
 	not(usa(Professor,arcondicionado)).
 	
-adds(desligararcondicionado(Sala),[desligado(Sala,arcondicionado)],desligado(Sala,arcondicionado), sala):-
+adds(desligararcondicionado(Sala),[desligado(Sala,arcondicionado)],desligado(Sala,arcondicionado), sala) :-
 	sala(Sala).
 		
 deletes(desligararcondicionado(Sala),[ligado(Sala,arcondicionado)], sala) :-
@@ -97,7 +91,25 @@ deletes(desligararcondicionado(Sala),[ligado(Sala,arcondicionado)], sala) :-
 
 	
 %ajustararcondicionado(Sala)
+% can(ajustararcondicionado(Sala),[at(Professor,Sala),ligado(Sala,arcondicionado),arajustado(N)], sala) :-
+	% aula(Professor,Sala,_,_),
+	% equipamento(arcondicionado),
+	% usa(Professor,arcondicionado),
+	% temperaturaar(Professor,Temperatura),
+	% Temperatura\==N.
+	
+% adds(ajustararcondicionado(Sala),[arajustado(Temperatura)],[arajustado(Temperatura)], sala) :-
+	% aula(Professor,Sala,_,_),
+	% equipamento(arcondicionado),
+	% usa(Professor,arcondicionado),
+	% temperaturaar(Professor,Temperatura).
 
+% deletes(ajustararcondicionado(Sala),[arajustado(N)],[arajustado(N)], sala) :-
+	% aula(Professor,Sala,_,_),
+	% equipamento(arcondicionado),
+	% usa(Professor,arcondicionado),
+	% temperaturaar(Professor,Temperatura),
+	% Temperatura\==N.
 
 %ligarcomputador(Sala)
 can(ligarcomputador(Sala),[at(Professor,Sala),desligado(Sala,computador)], sala) :- 
@@ -152,41 +164,38 @@ deletes(desligardatashow(Sala),[ligado(Sala,datashow)], sala) :-
 
 	
 %preparar(sala)
-can(preparar(Sala), [at(Professor,uff),horario(N),aberto(Sala)],sala):-
-	sala(Sala),
-	%usa(Professor, X),
-	%not(usa(Professor,Y)),
+can(preparar(Sala),[at(Professor,uff),horario(N),aberto(Sala)],sala):-
+	%sala(Sala),
 	aula(Professor,Sala,N,_).
 	
 adds(preparar(Sala),[at(Professor,Sala)],[at(Professor,Sala)],sala):-
-	sala(Sala),
+	%sala(Sala),
 	aula(Professor,Sala,_,_).	
 	
 deletes(preparar(Sala),[at(Professor,uff),fechado(Sala)],sala) :-
-	sala(Sala),
+	%sala(Sala),
 	aula(Professor,Sala,_,_).
 
 	
 %daraula(avançar o horario, adicionar deuaula(Professor)).
 can(daraula(Sala,Professor), [at(Professor,Sala),ligado(Sala,X),horario(N)],sala):-
-	sala(Sala),
+	%sala(Sala),
 	usa(Professor, X),
 	aula(Professor,Sala,N,_).
 
 adds(daraula(Sala,Professor),[at(Professor,uff),deuaula(Professor),horario(M)]
 	,[at(Professor,uff),deuaula(Professor),horario(M)],sala):-
-	sala(Sala),
-	aula(Professor,Sala,_,M),
-	usa(Professor,X).
+	%sala(Sala),
+	usa(Professor,X),
+	aula(Professor,Sala,_,M).
 	
 deletes(daraula(Sala,Professor),[horario(N)],sala) :-	
-	sala(Sala),
-	
+	%sala(Sala),	
 	aula(Professor,Sala,N,_).
 	
 
 %abrirsala
-can(abrirsala(Sala), [at(Professor,uff),horario(N)],sala):-
+can(abrirsala(Sala), [at(Professor,uff),horario(N),fechado(Sala)],sala):-
 	sala(Sala),
 	%usa(Professor, X),
 	%not(usa(Professor,Y)),
@@ -201,7 +210,7 @@ deletes(abrirsala(Sala),[fechado(Sala)],sala) :-
 	
 	
 %fecharsala
-can(fecharsala(Sala), [at(Professor,uff),horario(N)],sala):-
+can(fecharsala(Sala), [at(Professor,uff),horario(N),aberto(Sala)],sala):-
 	sala(Sala),
 	%usa(Professor, X),
 	%not(usa(Professor,Y)),
@@ -238,8 +247,12 @@ test5(P) :-
 	plan([at(aline, uff),at(leonardo,uff),horario(7),fechado(a),desligado(a,luzes),desligado(a,datashow),desligado(a,computador)],
 	     [at(aline,uff),at(leonardo,a),deuaula(aline),horario(9),fechado(a)], sala,P).
 test6(P) :-
-	plan([ligado(a,arcondicionado)],
-	     [desligado(a,arcondicionado)], sala,P).
+	plan([at(aline, uff),horario(7),fechado(a),ligado(a,luzes),ligado(a,datashow),ligado(a,computador)],
+	     [at(aline,uff),deuaula(aline), horario(9),fechado(a)], sala,P).
+		 
+test7(P) :-
+	plan([at(aline, uff),at(leonardo,uff),horario(7),fechado(a),desligado(a,luzes),desligado(a,datashow),desligado(a,arcondicionado)],
+	     [at(aline,uff),at(leonardo,uff),deuaula(leonardo),horario(11),fechado(a)], sala,P).
 		 
 		 
 		 
