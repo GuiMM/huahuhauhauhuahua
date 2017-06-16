@@ -128,15 +128,15 @@ generate_graph_nodes(N, _, _, Domain):-
 	
 	deletes(Action, DelPreConditions, Domain),
 	%% Instantiation Check
-	( ground(DelPreConditions) 
-           -> true
-            ; ( 
-	        nl, 
-		write('Action not fully instantiated '), write(Action),
-		nl,
-		write('Del Conditions: '), write(DelPreConditions), nl
-	    )
-	),
+	%( ground(DelPreConditions) 
+    %       -> true
+    %        ; ( 
+	%        nl, 
+	%	write('Action not fully instantiated '), write(Action),
+	%	nl,
+	%	write('Del Conditions: '), write(DelPreConditions), nl
+	%    )
+	%),
 
 	
 	adds(Action, AddConditions, _, Domain),
